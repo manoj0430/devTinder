@@ -2,6 +2,13 @@ const express = require("express");
 
 const app = express();
 
+app.get("/user", (req, res) => {
+  res.send({ firstName: "Lewis", lastName: "Hamilton" });
+});
+
+app.post("/user", (req, res) => {
+  res.send("Data successfully posted!!");
+});
 app.use("/test", (req, res) => {
   res.send("Hello from the test!!");
 });
