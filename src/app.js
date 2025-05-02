@@ -1,57 +1,30 @@
 const express = require("express");
-
+const connectDB = require("./config/database");
 const app = express();
+const User = require("./models/user");
 
-//Case 1: Middleware function that sends a response with two request handlers
-// app.use(
-//   "/user",
-//   (req, res, next) => {
-//     console.log("Response 1 is printed");
-//     res.send("Response 1");
+app.use(express.json()); // Middleware to parse JSON request body
+app.post("/signup", async (req, res) => {
+  // console.log(req.body);
+  // we have created new instance of User model
+  const user = new User(req.body);
 
-//   },
-//   (req, res) => {
-//     console.log("Response 2 is printed");
-//     res.send("Response 2");
-//   }
-// );
+  try {
+    await user.save();
 
-// app.use("/", (req, res, next) => {
-//   console.log("dashboard");
-//   //   res.send("hello from dashboard");
-//   next();
-// });
-
-// app.get(
-//   "/users",
-//   (req, res, next) => {
-//     console.log(" Users");
-//     // res.send("Hello from the users");
-//     next();
-//   },
-//   (req, res, next) => {
-//     console.log("Users 2");
-//     next();
-//   },
-//   (req, res) => {
-//     console.log("Users 3");
-//     res.send("Users 3");
-//   }
-// );
-const { authMiddleware, userAuth } = require("./middlewares/auth");
-app.use("/admin", authMiddleware);
-app.get("/admin/getAllData", (req, res) => {
-  res.send("All Data received");
+    res.send("User created Successfully");
+  } catch (err) {
+    res.status(401).send("Error creating user", err);
+  }
 });
 
-app.get("/admin/userData", (req, res) => {
-  res.send("User Data received");
-});
-
-app.get("/user/data", userAuth, (req, res) => {
-  res.send("Hello from the users");
-});
-
-app.listen(3000, () => {
-  console.log("Server is running on port 3000");
-});
+connectDB()
+  .then(() => {
+    console.log("Successfully connected to the database");
+    app.listen(3000, () => {
+      console.log("Server is running on port 3000");
+    });
+  })
+  .catch((err) => {
+    console.log("Error connecting to the database", err);
+  });
