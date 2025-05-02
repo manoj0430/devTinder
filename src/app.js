@@ -1,9 +1,11 @@
+require("dotenv").config();
 const express = require("express");
 const connectDB = require("./config/database");
 const app = express();
 const User = require("./models/user");
 
 app.use(express.json()); // Middleware to parse JSON request body
+
 app.post("/signup", async (req, res) => {
   // console.log(req.body);
   // we have created new instance of User model
